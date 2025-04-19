@@ -1,0 +1,32 @@
+name: Vesture Git
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+      - 'feature/*'
+  pull_request:
+    branches:
+      - main
+      - develop
+
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Rust
+        uses: moonrepo/setup-rust@v1
+        with:
+          channel: 'stable'
+
+      - name: Install dependencies
+        run: cargo build
+
+      - name: Run tests
+        run: cargo test
