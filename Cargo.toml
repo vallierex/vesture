@@ -3,10 +3,18 @@ name = "vesture"
 version = "0.1.0"
 edition = "2024"
 
+[lib]
+path = "src/lib.rs"
+
 [dependencies]
 tokio = { version = "1.44.2", features = ["full"] }
 tonic = { version = "0.13.0", features = ["transport"] }
 prost = "0.13.5"
+serde = { version = "1.0.219", features = ["derive"] }
+secrecy = { version = "0.10.3", features = ["serde"] }
+sqlx = { version = "0.8.5", features = ["postgres", "runtime-tokio", "chrono"] }
+dotenv = "0.15.0"
+chrono = "0.4.40"
 
 [build-dependencies]
 tonic-build = "0.13.0"

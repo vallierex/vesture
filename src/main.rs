@@ -1,3 +1,4 @@
+use chrono::{DateTime, Utc};
 use tonic::{transport::Server, Request, Response, Status};
 
 pub mod hello {
@@ -6,6 +7,7 @@ pub mod hello {
 
 use hello::hello_service_server::{HelloService, HelloServiceServer};
 use hello::{HelloRequest, HelloResponse};
+use vesture::configuration::get_configuration;
 
 #[derive(Debug, Default)]
 pub struct MyHello;
@@ -26,6 +28,19 @@ impl HelloService for MyHello {
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let config = get_configuration().expect("Failed to read configuration.");
+
+    let pool = sqlx::PgPool::connect_with(config.database.connect_options())
+        .await
+        .expect("Failed to connect to database.");
+
+    let row: (DateTime<Utc>,) = sqlx::query_as("SELECT now()")
+        .fetch_one(&pool)
+        .await
+        .expect("Failed to run test query");
+
+    println!("Database time: {}", row.0);
+
     let addr = "[::1]:50051".parse()?;
     let svc = MyHello::default();
 
